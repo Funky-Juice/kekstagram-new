@@ -40,7 +40,7 @@
 
       // Изначально предлагаемое кадрирование — часть по центру с размером в 3/4
       // от размера меньшей стороны.
-      
+
       // this._resizeConstraint = new Square(
       //     this._container.width / 2 - side / 2,
       //     this._container.height / 2 - side / 2,
@@ -92,21 +92,6 @@
       // Очистка изображения.
       this._ctx.clearRect(0, 0, this._container.width, this._container.height);
 
-      // Параметры линии.
-      // NB! Такие параметры сохраняются на время всего процесса отрисовки
-      // canvas'a поэтому важно вовремя поменять их, если нужно начать отрисовку
-      // чего-либо с другой обводкой.
-
-      // Толщина линии.
-      this._ctx.lineWidth = 6;
-      // Цвет обводки.
-      this._ctx.strokeStyle = '#ffe753';
-      // Размер штрихов. Первый элемент массива задает длину штриха, второй
-      // расстояние между соседними штрихами.
-      this._ctx.setLineDash([15, 10]);
-      // Смещение первого штриха от начала линии.
-      this._ctx.lineDashOffset = 7;
-
       // Сохранение состояния канваса.
       this._ctx.save();
 
@@ -115,18 +100,58 @@
 
       var displX = -(this._resizeConstraint.x + this._resizeConstraint.side / 2);
       var displY = -(this._resizeConstraint.y + this._resizeConstraint.side / 2);
+
       // Отрисовка изображения на холсте. Параметры задают изображение, которое
       // нужно отрисовать и координаты его верхнего левого угла.
       // Координаты задаются от центра холста.
       this._ctx.drawImage(this._image, displX, displY);
 
-      //
-      // this._ctx.fillRect(
-      //
-      // );
+      // Отрисовка черной рамки вокруг области кадрирования
+      var outterBorderX = this._container.width / 2;
+      var outterBorderY = this._container.height / 2;
+      var innerBorder = this._resizeConstraint.side / 2;
+
+      this._ctx.lineWidth = 6;
+      this._ctx.strokeStyle = 'rgba(0, 0, 0, 0)';
+      this._ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+      this._ctx.beginPath();
+      this._ctx.moveTo(- outterBorderX, - outterBorderY);
+      this._ctx.lineTo(outterBorderX, - outterBorderY);
+      this._ctx.lineTo(outterBorderX, outterBorderY);
+      this._ctx.lineTo(- outterBorderX, outterBorderY);
+      this._ctx.lineTo(- outterBorderX, - outterBorderY);
+
+      this._ctx.moveTo(- innerBorder - this._ctx.lineWidth / 2, - innerBorder - this._ctx.lineWidth / 2);
+      this._ctx.lineTo(innerBorder - this._ctx.lineWidth, - innerBorder - this._ctx.lineWidth / 2);
+      this._ctx.lineTo(innerBorder - this._ctx.lineWidth , innerBorder - this._ctx.lineWidth);
+      this._ctx.lineTo(- innerBorder - this._ctx.lineWidth / 2, innerBorder - this._ctx.lineWidth);
+      this._ctx.lineTo(- innerBorder - this._ctx.lineWidth / 2, - innerBorder - this._ctx.lineWidth / 2);
+      this._ctx.closePath();
+      this._ctx.stroke();
+      this._ctx.fill('evenodd');
+
+      // Отрисовка размеров кадрируемого изображения
+      var imgSizeX = this._image.naturalWidth;
+      var imgSizeY = this._image.naturalHeight;
+      var imgSize = imgSizeX + ' x ' + imgSizeY;
+      var textPositionX = -(imgSize.length * 10) / 2;
+      var textPositionY = - (this._resizeConstraint.side / 2) - 20;
+
+      this._ctx.fillStyle = '#ffffff';
+      this._ctx.font = "20px sans-serif";
+      this._ctx.fillText(imgSize, textPositionX, textPositionY);
+
 
       // Отрисовка прямоугольника, обозначающего область изображения после
       // кадрирования. Координаты задаются от центра.
+      // Цвет обводки.
+      this._ctx.strokeStyle = '#ffe753';
+      // Размер штрихов. Первый элемент массива задает длину штриха, второй
+      // расстояние между соседними штрихами.
+      this._ctx.setLineDash([15, 10]);
+      // Смещение первого штриха от начала линии.
+      this._ctx.lineDashOffset = 7;
+
       this._ctx.strokeRect(
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
           (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
