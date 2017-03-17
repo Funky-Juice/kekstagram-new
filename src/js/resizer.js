@@ -106,6 +106,7 @@
       // Координаты задаются от центра холста.
       this._ctx.drawImage(this._image, displX, displY);
 
+
       // Отрисовка черной рамки вокруг области кадрирования
       var outterBorderX = this._container.width / 2;
       var outterBorderY = this._container.height / 2;
@@ -114,6 +115,7 @@
       this._ctx.lineWidth = 6;
       this._ctx.strokeStyle = 'rgba(0, 0, 0, 0)';
       this._ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+
       this._ctx.beginPath();
       this._ctx.moveTo(- outterBorderX, - outterBorderY);
       this._ctx.lineTo(outterBorderX, - outterBorderY);
@@ -144,19 +146,41 @@
 
       // Отрисовка прямоугольника, обозначающего область изображения после
       // кадрирования. Координаты задаются от центра.
-      // Цвет обводки.
-      this._ctx.strokeStyle = '#ffe753';
-      // Размер штрихов. Первый элемент массива задает длину штриха, второй
-      // расстояние между соседними штрихами.
-      this._ctx.setLineDash([15, 10]);
-      // Смещение первого штриха от начала линии.
-      this._ctx.lineDashOffset = 7;
+      var startX = (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2;
+      var startY = (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2;
+      var constraintSide = this._resizeConstraint.side;
+      var lineWidth = this._ctx.lineWidth;
+      var ctx = this._ctx;
 
-      this._ctx.strokeRect(
-          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2,
-          this._resizeConstraint.side - this._ctx.lineWidth / 2);
+      drawDottedBorder(constraintSide, startX, startY, 3, lineWidth, '#ffe753');
+
+      function drawDottedBorder(side, x, y, r, lineW, color) {
+        ctx.beginPath();
+        ctx.fillStyle = color;
+
+        for (var i = 0; i < side; i += 9) {
+          ctx.moveTo(x + i, y);
+          ctx.arc(x + i, y, r, 0, 2 * Math.PI);
+        }
+
+        for (var i = 0; i < side; i += 9) {
+          ctx.moveTo(x + side - (lineW / 2), y  + i);
+          ctx.arc(x + side - (lineW / 2), y + i, r, 0, 2 * Math.PI);
+        }
+
+        for (var i = 0; i < side; i += 9) {
+          ctx.moveTo((x + side - (lineW / 2)) - i, y + side - (lineW / 2));
+          ctx.arc((x + side - (lineW / 2)) - i, y + side - (lineW / 2), r, 0, 2 * Math.PI);
+        }
+
+        for (var i = 0; i < side; i += 9) {
+          ctx.moveTo(x, (y + side - (lineW / 2)) - i);
+          ctx.arc(x, (y + side - (lineW / 2)) - i, r, 0, 2 * Math.PI);
+        }
+
+        ctx.closePath();
+        ctx.fill();
+      }
 
       // Восстановление состояния канваса, которое было до вызова ctx.save
       // и последующего изменения системы координат. Нужно для того, чтобы
