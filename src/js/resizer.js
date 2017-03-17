@@ -106,32 +106,6 @@
       // Координаты задаются от центра холста.
       this._ctx.drawImage(this._image, displX, displY);
 
-
-      // Отрисовка черной рамки вокруг области кадрирования
-      var outterBorderX = this._container.width / 2;
-      var outterBorderY = this._container.height / 2;
-      var innerBorder = this._resizeConstraint.side / 2;
-
-      this._ctx.lineWidth = 6;
-      this._ctx.strokeStyle = 'rgba(0, 0, 0, 0)';
-      this._ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
-
-      this._ctx.beginPath();
-      this._ctx.moveTo(- outterBorderX, - outterBorderY);
-      this._ctx.lineTo(outterBorderX, - outterBorderY);
-      this._ctx.lineTo(outterBorderX, outterBorderY);
-      this._ctx.lineTo(- outterBorderX, outterBorderY);
-      this._ctx.lineTo(- outterBorderX, - outterBorderY);
-
-      this._ctx.moveTo(- innerBorder - this._ctx.lineWidth / 2, - innerBorder - this._ctx.lineWidth / 2);
-      this._ctx.lineTo(innerBorder - this._ctx.lineWidth, - innerBorder - this._ctx.lineWidth / 2);
-      this._ctx.lineTo(innerBorder - this._ctx.lineWidth , innerBorder - this._ctx.lineWidth);
-      this._ctx.lineTo(- innerBorder - this._ctx.lineWidth / 2, innerBorder - this._ctx.lineWidth);
-      this._ctx.lineTo(- innerBorder - this._ctx.lineWidth / 2, - innerBorder - this._ctx.lineWidth / 2);
-      this._ctx.closePath();
-      this._ctx.stroke();
-      this._ctx.fill('evenodd');
-
       // Отрисовка размеров кадрируемого изображения
       var imgSizeX = this._image.naturalWidth;
       var imgSizeY = this._image.naturalHeight;
@@ -149,37 +123,41 @@
       var startX = (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2;
       var startY = (-this._resizeConstraint.side / 2) - this._ctx.lineWidth / 2;
       var constraintSide = this._resizeConstraint.side;
-      var lineWidth = this._ctx.lineWidth;
+      this._ctx.lineWidth = 4;
       var ctx = this._ctx;
 
-      drawDottedBorder(constraintSide, startX, startY, 3, lineWidth, '#ffe753');
+      drawZBorder(constraintSide, startX, startY, '#ffe753');
 
-      function drawDottedBorder(side, x, y, r, lineW, color) {
+      function drawZBorder(side, x, y, color) {
+        ctx.strokeStyle = color;
         ctx.beginPath();
-        ctx.fillStyle = color;
+        ctx.moveTo(x, y);
 
-        for (var i = 0; i < side; i += 9) {
-          ctx.moveTo(x + i, y);
-          ctx.arc(x + i, y, r, 0, 2 * Math.PI);
+        for (var q = 10; q < side; q += 10) {
+          ctx.lineTo(x + q, y - 10);
+          q += 10;
+          ctx.lineTo(x + q, y);
         }
 
-        for (var i = 0; i < side; i += 9) {
-          ctx.moveTo(x + side - (lineW / 2), y  + i);
-          ctx.arc(x + side - (lineW / 2), y + i, r, 0, 2 * Math.PI);
+        for (var z = 10; z < side; z += 10) {
+          ctx.lineTo((x + q) - 20, y + z);
+          z += 10;
+          ctx.lineTo((x + q) - 10, y + z);
         }
 
-        for (var i = 0; i < side; i += 9) {
-          ctx.moveTo((x + side - (lineW / 2)) - i, y + side - (lineW / 2));
-          ctx.arc((x + side - (lineW / 2)) - i, y + side - (lineW / 2), r, 0, 2 * Math.PI);
+        for (var j = 10; j < side; j += 10) {
+          ctx.lineTo(((x + q) - 10) - j, y + z);
+          j += 10;
+          ctx.lineTo(((x + q) - 10) - j, (y + z) - 10);
         }
 
-        for (var i = 0; i < side; i += 9) {
-          ctx.moveTo(x, (y + side - (lineW / 2)) - i);
-          ctx.arc(x, (y + side - (lineW / 2)) - i, r, 0, 2 * Math.PI);
+        for (var p = 10; p < side; p += 10) {
+          ctx.lineTo(x + 10, ((y + z) - 10) - p);
+          p += 10;
+          ctx.lineTo(x, ((y + z) - 10) - p);
         }
 
-        ctx.closePath();
-        ctx.fill();
+        ctx.stroke();
       }
 
       // Восстановление состояния канваса, которое было до вызова ctx.save
