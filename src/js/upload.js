@@ -238,6 +238,14 @@
     }
   };
 
+  // Считываем значение для куки фильтра, присваиваем его фото и чекаем её превью
+  var filterFromCookie = window.Cookies.get('upload-filter') || false;
+
+  if(filterFromCookie) {
+    filterImage.className = 'filter-image-preview ' + filterFromCookie;
+    filterForm.querySelector('#upload-' + filterFromCookie).checked = true;
+  }
+
   /**
    * Сброс формы фильтра. Показывает форму кадрирования.
    * @param {Event} evt
@@ -254,8 +262,30 @@
    * записав сохраненный фильтр в cookie.
    * @param {Event} evt
    */
+  var filterToCookie;
+
   filterForm.onsubmit = function(evt) {
     evt.preventDefault();
+
+    // Расчитываем срок хранения куки(количество дней с последнего прошедшего дня рождения Грейс Хоппер).
+    var dateNow = new Date();
+    var thisYear = dateNow.getFullYear();
+    var GraceHopperBirthday = new Date(thisYear, 11, 9);
+
+    var cookieExpire;
+    var msInOneDay = 24 * 60 * 60 * 1000;
+
+    if(dateNow - GraceHopperBirthday > 0) {
+      cookieExpire = Math.floor((dateNow - GraceHopperBirthday) / msInOneDay);
+    } else {
+      GraceHopperBirthday = new Date(thisYear - 1, 11, 9);
+      cookieExpire = Math.floor((dateNow - GraceHopperBirthday) / msInOneDay);
+    }
+
+    // Записываем выбранный фильтр в куки
+    if(filterToCookie) {
+      window.Cookies.set('upload-filter', filterToCookie, {expires: cookieExpire});
+    }
 
     cleanupResizer();
     updateBackground();
@@ -284,6 +314,9 @@
     var selectedFilter = [].filter.call(filterForm['upload-filter'], function(item) {
       return item.checked;
     })[0].value;
+
+    // Запись выбранного фильтра в переменную для куки
+    filterToCookie = filterMap[selectedFilter];
 
     // Класс перезаписывается, а не обновляется через classList потому что нужно
     // убрать предыдущий примененный класс. Для этого нужно или запоминать его
