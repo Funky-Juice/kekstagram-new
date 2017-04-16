@@ -172,7 +172,7 @@ body {
 
 .upload-form-controls {
   position: absolute;
-  top: 100%;
+  bottom: 0;
   right: 0;
   left: 0;
   z-index: 0;
@@ -225,7 +225,6 @@ body {
 .upload-resize-controls,
 .upload-filter-controls {
   position: absolute;
-  top: 100%;
   left: 50%;
   z-index: 1;
   transform: translateX(-50%);
@@ -240,6 +239,14 @@ body {
   color: #ffffff;
 
   border: 0;
+}
+
+.upload-filter-controls {
+  bottom: -5.9%;
+}
+
+.upload-resize-controls {
+  bottom: 10px;
 }
 
 .upload-resize-control {
