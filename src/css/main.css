@@ -570,6 +570,10 @@ input[type=radio]:checked + .upload-filter-label .upload-filter-preview {
   cursor: pointer;
 }
 
+.gallery-overlay-image:hover {
+  cursor: pointer;
+}
+
 .gallery-overlay-controls {
   font-weight: bold;
   font-size: 14px;

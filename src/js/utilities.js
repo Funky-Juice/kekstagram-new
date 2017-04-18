@@ -1,7 +1,6 @@
 'use strict';
 
 module.exports = {
-
   // Создаем скрипт для загрузки данных
   loadData: function loadData(url, callback) {
     var callbackName  = 'cb' + String(Math.random()).slice(-6);

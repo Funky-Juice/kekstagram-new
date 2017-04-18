@@ -1,5 +1,7 @@
 'use strict';
 
+var Gallery = require('./gallery');
+
 var IMG_LOAD_TIMEOUT = 2000;
 
 var template = document.getElementById('picture-template');
@@ -7,7 +9,7 @@ var templateContent = 'content' in template ? template.content : template;
 
 
 // Создаём блок фотографии на основе шаблона
-function createPictureElement(item) {
+function createPictureElement(item, i) {
   var templateElement =  templateContent.querySelector('.picture').cloneNode(true);
 
   var contentImg = new Image();
@@ -25,6 +27,11 @@ function createPictureElement(item) {
   var timerID = setTimeout(function() {
     templateElement.classList.add('picture-load-failure');
   }, IMG_LOAD_TIMEOUT);
+
+  templateElement.onclick = function(evt) {
+    evt.preventDefault()
+    Gallery.show(i);
+  }
 
   templateElement.querySelector('.picture-comments').innerHTML = item.comments;
   templateElement.querySelector('.picture-likes').innerHTML = item.likes;

@@ -310,10 +310,5 @@ filterForm.onchange = function() {
   filterImage.className = 'filter-image-preview ' + filterMap[selectedFilter];
 };
 
-// cleanupResizer();
-// updateBackground();
-
-module.exports = {
-  cleanupResizer: cleanupResizer,
-  updateBackground: updateBackground
-};
+cleanupResizer();
+updateBackground();
